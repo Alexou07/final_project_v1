@@ -8,6 +8,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(janitor)
+library(readxl)
 ```
 
 ## Gathered Data
@@ -31,4 +32,19 @@ national_stats <- read.csv("raw-data/Nutrition_Physical_Activity_and_Obesity.csv
 
 view(national_stats) %>%
   head(10)
+```
+
+```{r Access, echo=FALSE}
+
+label_info <- read_xls("raw-data/DataDownload.xls", sheet = 2)
+
+
+population_stats <- read_xls("raw-data/DataDownload.xls", sheet = 3)
+
+food_access <- read_xls("raw-data/DataDownload.xls", sheet = 5) %>%
+  mutate_if(is.numeric, ~round(.,2))
+
+store_access <- read_xls("raw-data/DataDownload.xls", sheet = 6) %>%
+  mutate_if(is.numeric, ~round(.,2))
+
 ```
