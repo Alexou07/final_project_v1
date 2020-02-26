@@ -1,0 +1,34 @@
+---
+title: "gather"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(janitor)
+```
+
+## Gathered Data
+
+```{r, National, echo=FALSE}
+
+national_stats <- read.csv("raw-data/Nutrition_Physical_Activity_and_Obesity.csv") %>%
+  pivot_wider(names_from = "Question", values_from = "Data_Value") %>%
+  subset(select = -c(Datasource, Topic, Class, Data_Value_Unit, Data_Value_Type, Data_Value_Alt, Data_Value_Footnote, Data_Value_Footnote_Symbol, Low_Confidence_Limit, High_Confidence_Limit, Total, Education, GeoLocation, ClassID, TopicID, QuestionID, DataValueTypeID, LocationID, StratificationCategory1, Stratification1, StratificationCategoryId1, StratificationID1))%>%
+  clean_names() %>%
+  rename(overweight = percent_of_adults_aged_18_years_and_older_who_have_an_overweight_classification, 
+         no_phys_activity = percent_of_adults_who_engage_in_no_leisure_time_physical_activity, 
+         hi_phys_active = percent_of_adults_who_achieve_at_least_150_minutes_a_week_of_moderate_intensity_aerobic_physical_activity_or_75_minutes_a_week_of_vigorous_intensity_aerobic_physical_activity_and_engage_in_muscle_strengthening_activities_on_2_or_more_days_a_week, 
+         med_phys_active = percent_of_adults_who_achieve_at_least_300_minutes_a_week_of_moderate_intensity_aerobic_physical_activity_or_150_minutes_a_week_of_vigorous_intensity_aerobic_activity_or_an_equivalent_combination,
+         mod_phys_active = percent_of_adults_who_achieve_at_least_150_minutes_a_week_of_moderate_intensity_aerobic_physical_activity_or_75_minutes_a_week_of_vigorous_intensity_aerobic_activity_or_an_equivalent_combination,
+         obesity = percent_of_adults_aged_18_years_and_older_who_have_obesity, 
+         fruit = percent_of_adults_who_report_consuming_fruit_less_than_one_time_daily, 
+         vegetables = percent_of_adults_who_report_consuming_vegetables_less_than_one_time_daily) %>%
+  subset(select = -percent_of_adults_who_engage_in_muscle_strengthening_activities_on_2_or_more_days_a_week) %>%
+  arrange(location_abbr)
+
+view(national_stats) %>%
+  head(10)
+```

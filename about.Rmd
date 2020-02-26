@@ -1,0 +1,17 @@
+---
+title: "about"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Final Project Version 1
+
+# Background
+
+The goal of this project is to analyze obesity trends in the United States, and how these specifically relate to food availability statistics in the country. 
+The American Center for Disease Control and Prevention states that obesity can be caused by a number of factors, including but not limited to "dietary patterns, physical activity, inactivity, medication use, and other exposures". According to the CDC, obesity is associated with "poorer mental health outcomes, reduced quality of life, and the leading causes of death in the U.S". These causes include life-threatening diseases such as cancer, diabetes, and heart disease. 
+If we look at statistics we will see that a large percentage of the U.S population is considered to be obese. That is why, it is not uncommon to hear the phrase that rising obesity in the U.S is a Public Health Crisis; and one that requires a thorough assessment and solution.
+The aim of this project is to look at the prevalence of different factors that may affect obesity rates; namely accessibility to healthy foods, and how they might correlate with the issue facing the country. Finding and counteracting potential sources that may contribute to obesity may be a first step in the right direction.
