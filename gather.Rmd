@@ -9,6 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(janitor)
 library(readxl)
+library(dplyr)
 ```
 
 ## Gathered Data
@@ -30,8 +31,10 @@ national_stats <- read.csv("raw-data/Nutrition_Physical_Activity_and_Obesity.csv
   subset(select = -percent_of_adults_who_engage_in_muscle_strengthening_activities_on_2_or_more_days_a_week) %>%
   arrange(location_abbr)
 
-view(national_stats) %>%
-  head(10)
+akf <- (national_stats) %>%
+  filter(location_desc == "Alaska" & gender == "Female") %>%
+  arrange(year_start) %>%
+  group_by(year_start) %>%
 ```
 
 ```{r Access, echo=FALSE}
