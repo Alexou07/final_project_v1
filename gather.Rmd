@@ -16,6 +16,8 @@ library(dplyr)
 
 Gathered in my repo is data collected from both the CDC and United States Department of Agriculture Economic Research Service website. This week I have started working no the data from the CDC website which looks at statistics regarding obesity in the US. I have started to compile by states variables which store the progression in percentage of population who is obese or overweight, by gender, race and income. I made functions that would allow me to do that for each variable, and then assigned them to states. For the future of my app I hope to be able to produce maps and informational graphics demonstrating in what ways these statistics might be correlated with food access and physical activity statistics.
 
+The link to my repo is the following: https://github.com/Alexou07/final_project_v1
+
 ```{r, National, echo=FALSE}
 
 national_stats <- read.csv("raw-data/Nutrition_Physical_Activity_and_Obesity.csv") %>%
