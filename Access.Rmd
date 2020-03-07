@@ -1,0 +1,28 @@
+---
+title: "food_access"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(janitor)
+library(readxl)
+library(dplyr)
+```
+
+```{r Access, echo=FALSE}
+
+label_info <- read_xls("raw-data/DataDownload.xls", sheet = 2)
+
+
+population_stats <- read_xls("raw-data/DataDownload.xls", sheet = 3)
+
+food_access <- read_xls("raw-data/DataDownload.xls", sheet = 5) %>%
+  mutate_if(is.numeric, ~round(.,2))
+
+store_access <- read_xls("raw-data/DataDownload.xls", sheet = 6) %>%
+  mutate_if(is.numeric, ~round(.,2))
+
+```

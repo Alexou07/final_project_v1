@@ -1,5 +1,5 @@
 ---
-title: "gather"
+title: "State Data"
 output: html_document
 ---
 
@@ -12,7 +12,9 @@ library(readxl)
 library(dplyr)
 ```
 
-## Gathered Data
+## Gathered Data by State
+
+Gathered in my repo is data collected from both the CDC and United States Department of Agriculture Economic Research Service website. This week I have started working no the data from the CDC website which looks at statistics regarding obesity in the US. I have started to compile by states variables which store the progression in percentage of population who is obese or overweight, by gender, race and income. I made functions that would allow me to do that for each variable, and then assigned them to states. For the future of my app I hope to be able to produce maps and informational graphics demonstrating in what ways these statistics might be correlated with food access and physical activity statistics.
 
 ```{r, National, echo=FALSE}
 
@@ -31,23 +33,190 @@ national_stats <- read.csv("raw-data/Nutrition_Physical_Activity_and_Obesity.csv
   subset(select = -percent_of_adults_who_engage_in_muscle_strengthening_activities_on_2_or_more_days_a_week) %>%
   arrange(location_abbr)
 
-akf <- (national_stats) %>%
-  filter(location_desc == "Alaska" & gender == "Female") %>%
-  arrange(year_start) %>%
-  group_by(year_start) %>%
 ```
 
-```{r Access, echo=FALSE}
+```{r functions, echo=FALSE}
+get_female_obesity <- function(x){
+  national_stats %>%
+  filter(location_desc == x & gender == "Female" & !is.na(obesity)) %>%
+  select(year_end, location_desc, sample_size, gender, obesity) %>%
+  arrange(year_end)
+}
 
-label_info <- read_xls("raw-data/DataDownload.xls", sheet = 2)
+get_female_overweight <- function(x){
+  national_stats %>%
+  filter(location_desc == x, gender == "Female" & !is.na(overweight)) %>%
+  select(year_end, location_desc, sample_size, gender, overweight) %>%
+  arrange(year_end)
+}
 
+get_male_overweight <- function(x){
+  national_stats %>%
+  filter(location_desc == x, gender == "Male" & !is.na(overweight)) %>%
+  select(year_end, location_desc, sample_size, gender, overweight) %>%
+  arrange(year_end)
+}
 
-population_stats <- read_xls("raw-data/DataDownload.xls", sheet = 3)
+get_male_obesity <- function(x){
+  national_stats %>%
+  filter(location_desc == x & gender == "Male" & !is.na(obesity)) %>%
+  select(year_end, location_desc, sample_size, gender, obesity) %>%
+  arrange(year_end)
+}
 
-food_access <- read_xls("raw-data/DataDownload.xls", sheet = 5) %>%
-  mutate_if(is.numeric, ~round(.,2))
+get_race_obesity <- function(x){
+  national_stats %>%
+  filter(location_desc == x & !is.na(sample_size) & !is.na(race_ethnicity) & race_ethnicity != "" & !is.na(obesity)) %>%
+  select(year_end, location_desc, sample_size, race_ethnicity, obesity) %>%
+  arrange(year_end)
+}
 
-store_access <- read_xls("raw-data/DataDownload.xls", sheet = 6) %>%
-  mutate_if(is.numeric, ~round(.,2))
+get_income_obesity <- function(x){
+  national_stats %>%
+  filter(location_desc == x & !is.na(sample_size) & !is.na(income) & income != "" & income != "Data not reported" & !is.na(obesity)) %>%
+  select(year_end, location_desc, sample_size, income, obesity) %>%
+  arrange(year_end)
+}
+```
+
+```{r Alaska, echo=FALSE}
+AK_female_obesity <- get_female_obesity("Alaska")
+
+AK_male_obesity <- get_male_obesity("Alaska")
+
+AK_female_overweight <- get_female_overweight("Alaska")
+
+AK_male_overweight <- get_male_overweight("Alaska")
+
+AK_race_obese <- get_race_obesity("Alaska")
+
+AK_income_obese <- get_income_obesity("Alaska")
+  
+```
+
+```{r Alabama, echo=FALSE}
+AL_female_obesity <- get_female_obesity("Alabama")
+
+AL_male_obesity <- get_male_obesity("Alabama")
+
+AL_female_overweight <- get_female_overweight("Alabama")
+
+AL_male_overweight <- get_male_overweight("Alabama")
+
+AL_race_obese <- get_race_obesity("Alabama")
+
+AL_income_obese <- get_income_obesity("Alabama")
+```
+
+```{r Arizona, echo=FALSE}
+AZ_female_obesity <- get_female_obesity("Arizona")
+
+AZ_male_obesity <- get_male_obesity("Arizona")
+
+AZ_female_overweight <- get_female_overweight("Arizona")
+
+AZ_male_overweight <- get_male_overweight("Arizona")
+
+AZ_race_obese <- get_race_obesity("Arizona")
+
+AZ_income_obese <- get_income_obesity("Arizona")
+```
+
+```{r Arkansas, echo=FALSE}
+AR_female_obesity <- get_female_obesity("Arkansas")
+
+AR_male_obesity <- get_male_obesity("Arkansas")
+
+AR_female_overweight <- get_female_overweight("Arkansas")
+
+AR_male_overweight <- get_male_overweight("Arkansas")
+
+AR_race_obese <- get_race_obesity("Arkansas")
+
+AR_income_obese <- get_income_obesity("Arkansas")
+```
+
+```{r California, echo=FALSE}
+CA_female_obesity <- get_female_obesity("California")
+
+CA_male_obesity <- get_male_obesity("California")
+
+CA_female_overweight <- get_female_overweight("California")
+
+CA_male_overweight <- get_male_overweight("California")
+
+CA_race_obese <- get_race_obesity("California")
+
+CA_income_obese <- get_income_obesity("California")
+```
+
+```{r Colorda, echo=FALSE}
+CO_female_obesity <- get_female_obesity("Colorado")
+
+CO_male_obesity <- get_male_obesity("Colorado")
+
+CO_female_overweight <- get_female_overweight("Colorado")
+
+CO_male_overweight <- get_male_overweight("Colorado")
+
+CO_race_obese <- get_race_obesity("Colorado")
+
+CO_income_obese <- get_income_obesity("Colorado")
+```
+
+```{r Connecticut, echo=FALSE}
+CT_female_obesity <- get_female_obesity("Connecticut")
+
+CT_male_obesity <- get_male_obesity("Connecticut")
+
+CT_female_overweight <- get_female_overweight("Connecticut")
+
+CT_male_overweight <- get_male_overweight("Connecticut")
+
+CT_race_obese <- get_race_obesity("Connecticut")
+
+CT_income_obese <- get_income_obesity("Connecticut")
+```
+
+```{r Delaware, echo=FALSE}
+DE_female_obesity <- get_female_obesity("Delaware")
+
+DE_male_obesity <- get_male_obesity("Delaware")
+
+DE_female_overweight <- get_female_overweight("Delaware")
+
+DE_male_overweight <- get_male_overweight("Delaware")
+
+DE_race_obesity <- get_race_obesity("Delaware")
+
+DE_income_obesity <- get_income_obesity("Delaware")
+```
+
+```{r Florida, echo=FALSE}
+FL_female_obesity <- get_female_obesity("Florida")
+
+FL_male_obesity <- get_male_obesity("Florida")
+
+FL_female_overweight <- get_female_overweight("Florida")
+
+FL_male_overweight <- get_male_overweight("Florida")
+
+FL_race_obesity <- get_race_obesity("Florida")
+
+FL_income_obesity <- get_income_obesity("Florida")
+```
+
+```{r Georgia, echo=FALSE}
+GA_female_obesity <- get_female_obesity("Georgia")
+
+GA_male_obesity <- get_male_obesity("Georgia")
+
+GA_female_overweight <- get_female_overweight("Georgia")
+
+GA_male_overweight <- get_male_overweight("Georgia")
+
+GA_race_obesity <- get_race_obesity("Georgia")
+
+GA_income_obesity <- get_income_obesity("Georgia")
 
 ```
