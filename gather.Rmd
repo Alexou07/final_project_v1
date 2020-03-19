@@ -12,11 +12,7 @@ library(readxl)
 library(dplyr)
 ```
 
-## Gathered Data by State
-
-Gathered in my repo is data collected from both the CDC and United States Department of Agriculture Economic Research Service website. This week I have started working no the data from the CDC website which looks at statistics regarding obesity in the US. I have started to compile by states variables which store the progression in percentage of population who is obese or overweight, by gender, race and income. I made functions that would allow me to do that for each variable, and then assigned them to states. For the future of my app I hope to be able to produce maps and informational graphics demonstrating in what ways these statistics might be correlated with food access and physical activity statistics.
-
-The link to my repo is the following: https://github.com/Alexou07/final_project_v1
+## Obesity rates by State in the female population
 
 ```{r, National, echo=FALSE}
 
@@ -221,4 +217,83 @@ GA_race_obesity <- get_race_obesity("Georgia")
 
 GA_income_obesity <- get_income_obesity("Georgia")
 
+```
+
+```{r Hawaii, echo=FALSE}
+HI_female_obesity <- get_female_obesity("Hawaii")
+
+HI_male_obesity <- get_male_obesity("Hawaii")
+
+HI_female_overweight <- get_female_overweight("Hawaii")
+
+HI_male_overweight <- get_male_overweight("Hawaii")
+
+HI_race_obesity <- get_race_obesity("Hawaii")
+
+HI_income_obesity <- get_income_obesity("Hawaii")
+```
+
+```{r Idaho, echo=FALSE}
+ID_female_obesity <- get_female_obesity("Idaho")
+
+ID_male_obesity <- get_male_obesity("Idaho")
+
+ID_female_overweight <- get_female_overweight("Idaho")
+
+ID_male_overweight <- get_male_overweight("Idaho")
+
+ID_race_obesity <- get_race_obesity("Idaho")
+
+ID_income_obesity <- get_income_obesity("Idaho")
+```
+
+```{r New York, echo=FALSE}
+NY_female_obesity <- get_female_obesity("New York")
+
+NY_male_obesity <- get_male_obesity("New York")
+
+NY_female_overweight <- get_female_overweight("New York")
+
+NY_male_overweight <- get_male_overweight("New York")
+
+NY_race_obesity <- get_race_obesity("New York")
+
+NY_income_obesity <- get_income_obesity("New York")
+```
+
+```{r Texas, echo=FALSE}
+TX_female_obesity <- get_female_obesity("Texas")
+
+TX_male_obesity <- get_male_obesity("Texas")
+
+TX_female_overweight <- get_female_overweight("Texas")
+
+TX_male_overweight <- get_male_overweight("Texas")
+
+TX_race_obesity <- get_race_obesity("Texas")
+
+TX_income_obesity <- get_income_obesity("Texas")
+```
+
+```{r graph, echo=FALSE}
+tristate_female <- full_join(NY_female_obesity, TX_female_obesity, by = c("year_end", "gender", "location_desc","obesity")) %>%
+  full_join(CA_female_obesity, by = c("year_end", "gender", "location_desc", "obesity")) %>%
+  full_join(FL_female_obesity, by = c("year_end", "gender", "location_desc", "obesity"))
+
+tristate_male <- full_join(NY_male_obesity, TX_male_obesity, by = c("year_end", "location_desc", "gender", "obesity")) %>%
+  full_join(CA_male_obesity, by = c("year_end", "location_desc", "gender", "obesity")) %>%
+  full_join(FL_male_obesity, by = c("year_end", "location_desc", "gender", "obesity"))
+
+
+tristate_combined <- rbind(tristate_female, tristate_male)
+
+tristate_combined %>%
+  ggplot(aes(year_end, obesity, color = location_desc)) + geom_line() +
+  facet_wrap(~gender) +
+  labs(title = "Evolution of obesity rates in population by gender",
+       subtitle = "Four most populated states",
+       color = "State") +
+       ylab("Percentage") +
+       xlab("Year") +
+  theme_classic()
 ```
