@@ -12,7 +12,7 @@ library(readxl)
 library(dplyr)
 ```
 
-## Obesity rates by State in the female population
+## Obesity rates by State and gender
 
 ```{r, National, echo=FALSE}
 
@@ -31,6 +31,9 @@ national_stats <- read.csv("raw-data/Nutrition_Physical_Activity_and_Obesity.csv
   subset(select = -percent_of_adults_who_engage_in_muscle_strengthening_activities_on_2_or_more_days_a_week) %>%
   arrange(location_abbr)
 
+states <- tibble(ID = 1:50,
+                 abbreviation = c("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID",	"IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV",	"NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"),
+                 name = c("ALABAMA","ALASKA",	"ARIZONA", "ARKANSAS", "CALIFORNIA", "COLORADO", "CONNECTICUT", "DELAWARE", "FLORIDA", "GEORGIA", "HAWAII", "IDAHO", "ILLINOIS", "INDIANA", "IOWA", "KANSAS", "KENTUCKY", "LOUISIANA", "MAINE", "MARYLAND", "MASSACHUSETTS", "MICHIGAN", "MINNESOTA", "MISSISSIPPI", "MISSOURI", "MONTANA", "NEBRASKA", "NEVADA", "NEW HAMPSHIRE", "NEW JERSEY", "NEW MEXICO", "NEW YORK", "NORTH CAROLINA", "NORTH DAKOTA", "OHIO", "OKLAHOMA", "OREGON", "PENNSYLVANIA", "RHODE ISLAND", "SOUTH CAROLINA", "SOUTH DAKOTA", "TENNESSEE", "TEXAS", "UTAH", "VERMONT", "VIRGINIA", "WASHINGTON", "WEST VIRGINIA", "WISCONSIN", "WYOMING"))
 ```
 
 ```{r functions, echo=FALSE}
@@ -77,212 +80,15 @@ get_income_obesity <- function(x){
 }
 ```
 
-```{r Alaska, echo=FALSE}
-AK_female_obesity <- get_female_obesity("Alaska")
-
-AK_male_obesity <- get_male_obesity("Alaska")
-
-AK_female_overweight <- get_female_overweight("Alaska")
-
-AK_male_overweight <- get_male_overweight("Alaska")
-
-AK_race_obese <- get_race_obesity("Alaska")
-
-AK_income_obese <- get_income_obesity("Alaska")
-  
-```
-
-```{r Alabama, echo=FALSE}
-AL_female_obesity <- get_female_obesity("Alabama")
-
-AL_male_obesity <- get_male_obesity("Alabama")
-
-AL_female_overweight <- get_female_overweight("Alabama")
-
-AL_male_overweight <- get_male_overweight("Alabama")
-
-AL_race_obese <- get_race_obesity("Alabama")
-
-AL_income_obese <- get_income_obesity("Alabama")
-```
-
-```{r Arizona, echo=FALSE}
-AZ_female_obesity <- get_female_obesity("Arizona")
-
-AZ_male_obesity <- get_male_obesity("Arizona")
-
-AZ_female_overweight <- get_female_overweight("Arizona")
-
-AZ_male_overweight <- get_male_overweight("Arizona")
-
-AZ_race_obese <- get_race_obesity("Arizona")
-
-AZ_income_obese <- get_income_obesity("Arizona")
-```
-
-```{r Arkansas, echo=FALSE}
-AR_female_obesity <- get_female_obesity("Arkansas")
-
-AR_male_obesity <- get_male_obesity("Arkansas")
-
-AR_female_overweight <- get_female_overweight("Arkansas")
-
-AR_male_overweight <- get_male_overweight("Arkansas")
-
-AR_race_obese <- get_race_obesity("Arkansas")
-
-AR_income_obese <- get_income_obesity("Arkansas")
-```
-
-```{r California, echo=FALSE}
-CA_female_obesity <- get_female_obesity("California")
-
-CA_male_obesity <- get_male_obesity("California")
-
-CA_female_overweight <- get_female_overweight("California")
-
-CA_male_overweight <- get_male_overweight("California")
-
-CA_race_obese <- get_race_obesity("California")
-
-CA_income_obese <- get_income_obesity("California")
-```
-
-```{r Colorda, echo=FALSE}
-CO_female_obesity <- get_female_obesity("Colorado")
-
-CO_male_obesity <- get_male_obesity("Colorado")
-
-CO_female_overweight <- get_female_overweight("Colorado")
-
-CO_male_overweight <- get_male_overweight("Colorado")
-
-CO_race_obese <- get_race_obesity("Colorado")
-
-CO_income_obese <- get_income_obesity("Colorado")
-```
-
-```{r Connecticut, echo=FALSE}
-CT_female_obesity <- get_female_obesity("Connecticut")
-
-CT_male_obesity <- get_male_obesity("Connecticut")
-
-CT_female_overweight <- get_female_overweight("Connecticut")
-
-CT_male_overweight <- get_male_overweight("Connecticut")
-
-CT_race_obese <- get_race_obesity("Connecticut")
-
-CT_income_obese <- get_income_obesity("Connecticut")
-```
-
-```{r Delaware, echo=FALSE}
-DE_female_obesity <- get_female_obesity("Delaware")
-
-DE_male_obesity <- get_male_obesity("Delaware")
-
-DE_female_overweight <- get_female_overweight("Delaware")
-
-DE_male_overweight <- get_male_overweight("Delaware")
-
-DE_race_obesity <- get_race_obesity("Delaware")
-
-DE_income_obesity <- get_income_obesity("Delaware")
-```
-
-```{r Florida, echo=FALSE}
-FL_female_obesity <- get_female_obesity("Florida")
-
-FL_male_obesity <- get_male_obesity("Florida")
-
-FL_female_overweight <- get_female_overweight("Florida")
-
-FL_male_overweight <- get_male_overweight("Florida")
-
-FL_race_obesity <- get_race_obesity("Florida")
-
-FL_income_obesity <- get_income_obesity("Florida")
-```
-
-```{r Georgia, echo=FALSE}
-GA_female_obesity <- get_female_obesity("Georgia")
-
-GA_male_obesity <- get_male_obesity("Georgia")
-
-GA_female_overweight <- get_female_overweight("Georgia")
-
-GA_male_overweight <- get_male_overweight("Georgia")
-
-GA_race_obesity <- get_race_obesity("Georgia")
-
-GA_income_obesity <- get_income_obesity("Georgia")
-
-```
-
-```{r Hawaii, echo=FALSE}
-HI_female_obesity <- get_female_obesity("Hawaii")
-
-HI_male_obesity <- get_male_obesity("Hawaii")
-
-HI_female_overweight <- get_female_overweight("Hawaii")
-
-HI_male_overweight <- get_male_overweight("Hawaii")
-
-HI_race_obesity <- get_race_obesity("Hawaii")
-
-HI_income_obesity <- get_income_obesity("Hawaii")
-```
-
-```{r Idaho, echo=FALSE}
-ID_female_obesity <- get_female_obesity("Idaho")
-
-ID_male_obesity <- get_male_obesity("Idaho")
-
-ID_female_overweight <- get_female_overweight("Idaho")
-
-ID_male_overweight <- get_male_overweight("Idaho")
-
-ID_race_obesity <- get_race_obesity("Idaho")
-
-ID_income_obesity <- get_income_obesity("Idaho")
-```
-
-```{r New York, echo=FALSE}
-NY_female_obesity <- get_female_obesity("New York")
-
-NY_male_obesity <- get_male_obesity("New York")
-
-NY_female_overweight <- get_female_overweight("New York")
-
-NY_male_overweight <- get_male_overweight("New York")
-
-NY_race_obesity <- get_race_obesity("New York")
-
-NY_income_obesity <- get_income_obesity("New York")
-```
-
-```{r Texas, echo=FALSE}
-TX_female_obesity <- get_female_obesity("Texas")
-
-TX_male_obesity <- get_male_obesity("Texas")
-
-TX_female_overweight <- get_female_overweight("Texas")
-
-TX_male_overweight <- get_male_overweight("Texas")
-
-TX_race_obesity <- get_race_obesity("Texas")
-
-TX_income_obesity <- get_income_obesity("Texas")
-```
 
 ```{r graph, echo=FALSE}
-tristate_female <- full_join(NY_female_obesity, TX_female_obesity, by = c("year_end", "gender", "location_desc","obesity")) %>%
-  full_join(CA_female_obesity, by = c("year_end", "gender", "location_desc", "obesity")) %>%
-  full_join(FL_female_obesity, by = c("year_end", "gender", "location_desc", "obesity"))
+tristate_female <- full_join(get_female_obesity("New York"), get_female_obesity("Texas"), by = c("year_end", "gender", "location_desc","obesity")) %>%
+  full_join(get_female_obesity("California"), by = c("year_end", "gender", "location_desc", "obesity")) %>%
+  full_join(get_female_obesity("Texas"), by = c("year_end", "gender", "location_desc", "obesity"))
 
-tristate_male <- full_join(NY_male_obesity, TX_male_obesity, by = c("year_end", "location_desc", "gender", "obesity")) %>%
-  full_join(CA_male_obesity, by = c("year_end", "location_desc", "gender", "obesity")) %>%
-  full_join(FL_male_obesity, by = c("year_end", "location_desc", "gender", "obesity"))
+tristate_male <- full_join(get_male_obesity("New York"), get_male_obesity("Texas"), by = c("year_end", "location_desc", "gender", "obesity")) %>%
+  full_join(get_male_obesity("California"), by = c("year_end", "location_desc", "gender", "obesity")) %>%
+  full_join(get_male_obesity("Florida"), by = c("year_end", "location_desc", "gender", "obesity"))
 
 
 tristate_combined <- rbind(tristate_female, tristate_male)
