@@ -9,30 +9,57 @@
 
 library(shiny)
 library(markdown)
+library(tidyverse)
+library(dplyr)
+national_stats <- read_csv("national_stats.csv")
+source("functions.R")
 
-
-# Define UI for application that draws a histogram
+# Define UI for app that draws a histogram ----
 ui <- fluidPage(
     
-    titlePanel("includeText, includeHTML, and includeMarkdown"),
+    # App title ----
+    titlePanel("Obesity Rates"),
     
-    fluidRow(
-        column(4,
-               includeMarkdown("gather.Rmd")
+    # Sidebar layout with input and output definitions ----
+    sidebarLayout(
+        
+        # Sidebar panel for inputs ----
+        sidebarPanel(
+            selectInput("state", "Choose a State", choices = c("California", "Florida", 
+                                                               "New York", "Texas")),
+            br()
+            
+        ),
+        
+        # Main panel for displaying outputs ----
+        mainPanel(
+            
+            # Output: Histogram ----
+            plotOutput("distPlot")
+            
         )
     )
 )
-# Define server logic required to draw a histogram
+
+# Define server logic required to draw a histogram ----
 server <- function(input, output) {
+    
 
     output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white')
+        
+        x <- get_female_obesity(input$state) 
+        y <- get_male_obesity(input$state) 
+        xy <- rbind(x, y)
+            
+        ggplot(xy, aes(year_end, obesity, color = gender)) + geom_line()+
+            facet_wrap(~gender) +
+            labs(title = "Evolution of obesity rates in population by gender") +
+            ylab("Percentage") +
+            xlab("Year") +
+            theme_classic()
+        
     })
+    
 }
 
 # Run the application 
