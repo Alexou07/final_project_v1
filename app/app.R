@@ -8,58 +8,71 @@
 #
 
 library(shiny)
-library(markdown)
-library(tidyverse)
 library(dplyr)
+library(forcats)
+library(ggplot2)
+library(readr)
+library(tidyverse)
+library(markdown)
+
+
 national_stats <- read_csv("national_stats.csv")
 source("functions.R")
 
+
+
 # Define UI for app that draws a histogram ----
-ui <- fluidPage(
-    
-    # App title ----
-    titlePanel("Obesity Rates"),
-    
-    # Sidebar layout with input and output definitions ----
-    sidebarLayout(
-        
-        # Sidebar panel for inputs ----
-        sidebarPanel(
-            selectInput("state", "Choose a State", choices = c("California", "Florida", 
-                                                               "New York", "Texas")),
-            br()
-            
-        ),
-        
-        # Main panel for displaying outputs ----
-        mainPanel(
-            
-            # Output: Histogram ----
-            plotOutput("distPlot")
-            
-        )
-    )
-)
+ui <- navbarPage("Obesity and Demographics in the US",
+               
+               tabPanel("Plot",
+                        # Sidebar layout with input and output definitions ----
+                        sidebarLayout(
+                            
+                            # Sidebar panel for inputs ----
+                            sidebarPanel(
+                                selectInput("state", "Choose a State", choices = national_stats %>%
+                                                select(location_desc)),
+                                selectInput("demo", "Choose a Variable", choices = c("Gender" = "gender",
+                                                                                     "Race" = "race_ethnicity",
+                                                                                     "Income" = "income"))
+                            ),
+                            # Main panel for displaying outputs ----
+                            mainPanel(
+                                # Output: Histogram ----
+                                plotOutput("Plot")
+                            )
+                        )),
+               
+               tabPanel("About")
+            )
 
 # Define server logic required to draw a histogram ----
 server <- function(input, output) {
     
-
-    output$distPlot <- renderPlot({
+    
+    x <- reactive({
+        bind_rows(get_female_obesity(input$state), get_male_obesity(input$state),
+            get_race_obesity(input$state), get_income_obesity(input$state))
+    })
+    
+    
+    output$Plot <- renderPlot({
+        req(nrow(x()) > 0)
         
-        x <- get_female_obesity(input$state) 
-        y <- get_male_obesity(input$state) 
-        xy <- rbind(x, y)
-            
-        ggplot(xy, aes(year_end, obesity, color = gender)) + geom_line()+
-            facet_wrap(~gender) +
-            labs(title = "Evolution of obesity rates in population by gender") +
+        p <- x() %>%
+            select(year_end, obesity, input$demo) %>%
+            ggplot(data = subset(., !is.na(get(input$demo))), 
+                    mapping = aes(year_end, obesity, color = get(input$demo))) + 
+            geom_line() +
+            facet_wrap(~get(input$demo)) +
+            labs(title = "Evolution of obesity rates in state population by variable",
+                color = "Variable") +
             ylab("Percentage") +
             xlab("Year") +
             theme_classic()
         
+        print(p)
     })
-    
 }
 
 # Run the application 

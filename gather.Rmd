@@ -84,32 +84,17 @@ get_income_obesity <- function(x){
 
 
 ```{r graph, echo=FALSE}
-tristate_female <- full_join(get_female_obesity("New York"), get_female_obesity("Texas"), by = c("year_end", "gender", "location_desc","obesity")) %>%
-  full_join(get_female_obesity("California"), by = c("year_end", "gender", "location_desc", "obesity")) %>%
-  full_join(get_female_obesity("Texas"), by = c("year_end", "gender", "location_desc", "obesity"))
 
-tristate_male <- full_join(get_male_obesity("New York"), get_male_obesity("Texas"), by = c("year_end", "location_desc", "gender", "obesity")) %>%
-  full_join(get_male_obesity("California"), by = c("year_end", "location_desc", "gender", "obesity")) %>%
-  full_join(get_male_obesity("Florida"), by = c("year_end", "location_desc", "gender", "obesity"))
+new <- bind_rows(get_female_obesity("New York"), get_male_obesity("New York"),
+            get_race_obesity("New York"), get_income_obesity("New York"))
 
 
-tristate_combined <- rbind(tristate_female, tristate_male)
-
-tristate_combined %>%
-  ggplot(aes(year_end, obesity, color = location_desc)) + geom_line() +
-  facet_wrap(~gender) +
+  ggplot(data = subset(new, !is.na(gender)), aes(year_end, obesity, color = gender)) + geom_line() +
+  facet_wrap(~gender) + 
   labs(title = "Evolution of obesity rates in population by gender",
-       subtitle = "Four most populated states",
-       color = "State") +
+       subtitle = "Four most populated states") +
        ylab("Percentage") +
        xlab("Year") +
   theme_classic()
 ```
 
-```{r final plot, echo=FALSE}
-names <- as.vector(states%>%select(name))
-abb <- as.vector(states%>%select(abbreviation))
-
-final_set <- tibble("1" = map_dfr(seq_len(3), ~abb),
-                    "2" = map_dfr(seq_len(3), ~names))
-```

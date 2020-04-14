@@ -1,3 +1,6 @@
+
+national_stats <- read_csv("national_stats.csv")
+
 get_female_obesity <- function(x){
   national_stats %>%
     filter(location_desc == x & gender == "Female" & !is.na(obesity)) %>%
