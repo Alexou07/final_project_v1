@@ -10,6 +10,10 @@ library(tidyverse)
 library(janitor)
 library(readxl)
 library(dplyr)
+library(tidycensus)
+library(urbnmapr)
+library(scales)
+census_api_key("9f9584127dd506cdaf80bdb78927e9c01c12f2b8")
 ```
 
 ```{r Access, echo=FALSE}
@@ -17,12 +21,32 @@ library(dplyr)
 label_info <- read_xls("raw-data/DataDownload.xls", sheet = 2)
 
 
-population_stats <- read_xls("raw-data/DataDownload.xls", sheet = 3)
+states_stats <- urbnmapr::counties %>%
+  select(long, lat, group, county_fips, state_abbv, county_name)
+
+names(states_stats)[5] <- "state"
 
 food_access <- read_xls("raw-data/DataDownload.xls", sheet = 5) %>%
-  mutate_if(is.numeric, ~round(.,2))
+  mutate_if(is.numeric, ~round(.,2)) %>%
+  clean_names() %>%
+  na.omit()
 
 store_access <- read_xls("raw-data/DataDownload.xls", sheet = 6) %>%
   mutate_if(is.numeric, ~round(.,2))
 
+```
+
+```{r}
+
+new <- merge(states_stats, food_access, by = "state")
+
+states_stats %>%
+  filter(state == "AL") %>%
+ggplot(mapping = aes(long, lat, group = group)) +
+  geom_polygon(color = "#ffffff", size = .25) +
+  scale_fill_gradient(labels = scales::percent,
+                       guide = guide_colorbar(title.position = "top")) +
+  coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+  theme(legend.title = element_text(),
+        legend.key.width = unit(.5, "in")) 
 ```
