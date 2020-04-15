@@ -17,6 +17,7 @@ library(markdown)
 
 
 national_stats <- read_csv("national_stats.csv")
+food_stats <- read_csv("food_stats.csv")
 source("functions.R")
 
 
@@ -43,7 +44,22 @@ ui <- navbarPage("Obesity and Demographics in the US",
                             )
                         )),
                
-               tabPanel("About")
+               tabPanel("Maps",
+                        # Sidebar layout with input and output definitions ----
+                        sidebarLayout(# Sidebar panel for inputs ----
+                                      sidebarPanel(
+                                          selectInput("abbv", "Choose a State (abbreviation)", 
+                                                      choices = national_stats %>%
+                                                          select(location_abbr)),
+                                          selectInput("stores", "Choose a Variable", 
+                                                      choices = c("Access to stores" = "pct_laccess_pop15"))
+                                      ),
+                                      # Main panel for displaying outputs ----
+                                      mainPanel(
+                                          # Output: Map of counties
+                                          plotOutput("mapPlot")
+                                      )
+                        ))
             )
 
 # Define server logic required to draw a histogram ----
@@ -72,6 +88,22 @@ server <- function(input, output) {
             theme_classic()
         
         print(p)
+    })
+    
+    output$mapPlot <- renderPlot({
+        
+       m <- food_stats %>%
+            filter(state.x == input$abbv) %>%
+            ggplot(mapping = aes(long, lat, group = group, fill = get(input$stores))) +
+            geom_polygon(color = "#ffffff", size = .25) +
+            coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+            labs(title = "Percent of population with low access to variable in 2015",
+                 fill = "Percent of population \n with low access") +
+            theme(legend.title = element_text(),
+                  legend.key.width = unit(.5, "in")) 
+       
+       print(m)
+        
     })
 }
 
