@@ -19,21 +19,53 @@ census_api_key("9f9584127dd506cdaf80bdb78927e9c01c12f2b8")
 ```{r Access, echo=FALSE}
 
 states_stats <- urbnmapr::counties %>%
-  select(long, lat, group, county_fips, state_abbv, county_name)
+  select(long, lat, group, county_fips, state_abbv, county_name) %>%
+  na.omit()
 
 names(states_stats)[5] <- "state"
 
-food_access <- read_xls("raw-data/DataDownload.xls", sheet = 5) %>%
+food <- read_xls("raw-data/DataDownload.xls", sheet = 5) %>%
   mutate_if(is.numeric, ~round(.,2)) %>%
-  clean_names() %>%
+  clean_names() %>% 
+  select(fips, pct_laccess_pop15, pct_laccess_lowi15) %>%
   na.omit()
 
-names(food_access)[1] <- "county_fips"
+names(food)[1] <- "county_fips"
 
-store_access <- read_xls("raw-data/DataDownload.xls", sheet = 6) %>%
-  mutate_if(is.numeric, ~round(.,2))
 
-food_stats <- left_join(states_stats, food_access, by = "county_fips")
+
+stores <- read_xls("raw-data/DataDownload.xls", sheet = 6) %>%
+  clean_names() %>%
+  mutate_if(is.numeric, ~round(.,2)) %>%
+  select(fips, grocpth14, convspth14) %>%
+  na.omit()
+
+names(stores)[1] <- "county_fips"
+
+one <- left_join(food, stores, by = "county_fips")
+
+local <- read_xls("raw-data/DataDownload.xls", sheet = 11) %>%
+  clean_names() %>%
+  mutate_if(is.numeric, ~round(.,2)) %>%
+  select(fips, fmrktpth16, pct_fmrkt_snap16, pct_fmrkt_frveg16) %>%
+  na.omit(.)
+
+names(local)[1] <- "county_fips"
+
+two <- left_join(one, local, by = "county_fips")
+
+
+health <- read_xls("raw-data/DataDownload.xls", sheet = 12) %>%
+  clean_names() %>%
+  mutate_if(is.numeric, ~round(.,2)) %>%
+  select(fips, pct_obese_adults13, pct_diabetes_adults13) %>%
+  na.omit(.)
+
+names(health)[1] <- "county_fips"
+
+three <- left_join(two, health, by = "county_fips")
+
+food_stats <- left_join(states_stats, three, by = "county_fips")
 
 write.csv(food_stats, file = "app/food_stats.csv")
 ```
