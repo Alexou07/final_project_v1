@@ -31,11 +31,17 @@ ui <- navbarPage("Obesity and Demographics in the US",
                             
                             # Sidebar panel for inputs ----
                             sidebarPanel(
+                                h3("Change over time"),
                                 selectInput("state", "Choose a State", choices = national_stats %>%
                                                 select(location_desc)),
                                 selectInput("demo", "Choose a Variable", choices = c("Gender" = "gender",
                                                                                      "Race" = "race_ethnicity",
-                                                                                     "Income" = "income"))
+                                                                                     "Income" = "income")),
+                                br(),
+                                p("This plot shows the evolution of obesity rates in US states over the past few years. 
+                                You may choose a state and variable to examine how this evolution changes amongst certain 
+                                demographics. For example, the gender variable will let you observe how obesity rates 
+                                  have evovled for women and men in the state of your choice. Explore the data as you wish!")
                             ),
                             # Main panel for displaying outputs ----
                             mainPanel(
@@ -105,6 +111,7 @@ server <- function(input, output) {
             ggplot(mapping = aes(long, lat, group = group, fill = get(input$stores))) +
             geom_polygon(color = "#ffffff", size = .25) +
             coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+           scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
             labs(title = "Distribution of variable by county",
                  fill = "Distribution") +
             theme(legend.title = element_text(),

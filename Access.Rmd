@@ -72,10 +72,11 @@ write.csv(food_stats, file = "app/food_stats.csv")
 
 ```{r}
 food_stats %>%
-  filter(state.x == "AL") %>%
+  filter(state == "AL") %>%
 ggplot(mapping = aes(long, lat, group = group, fill = pct_laccess_pop15)) +
   geom_polygon(color = "#ffffff", size = .25) +
   coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+  scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
   labs(fill = "Percent of population \n with low store access") +
   theme(legend.title = element_text(),
         legend.key.width = unit(.5, "in")) 
