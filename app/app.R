@@ -58,15 +58,15 @@ ui <- navbarPage("Obesity and Demographics in the US",
                                                       choices = national_stats %>%
                                                           select(location_abbr)),
                                           selectInput("stores", "Choose a Variable", 
-                                                      choices = c("Access to stores (%)" = "pct_laccess_pop15",
+                                                      choices = c("Low access to stores (%)" = "pct_laccess_pop15",
                                                                   "Low Income, low store access (%)" = "pct_laccess_lowi15",
                                                                   "Grocery Stores/1,000 pop, 2014" = "grocpth14",
                                                                   "Convenience stores/1,000 pop, 2014" = "convspth14",
                                                                   "Farmers' markets/1,000 pop, 2016" = "fmrktpth16",
                                                                   "Farmers' markets that accept SNAP (%)" = "pct_fmrkt_snap16",
                                                                   "Farmers markets that sell fruits & vegetables (%)" = "pct_fmrkt_frveg16",
-                                                                  "Diabetes rate in adults (%)" = "pct_diabetes_adults13",
-                                                                  "Obesity rate in adults (%)" = "pct_obese_adults13"))
+                                                                  "Diabetes rate in adults (%)" = "diabetes",
+                                                                  "Obesity rate in adults (%)" = "obesity"))
                                       ),
                                       # Main panel for displaying outputs ----
                                       mainPanel(
@@ -107,7 +107,7 @@ server <- function(input, output) {
     output$mapPlot <- renderPlot({
         
        m <- food_stats %>%
-            filter(state == input$abbv) %>%
+            filter(state_abbv == input$abbv) %>%
             ggplot(mapping = aes(long, lat, group = group, fill = get(input$stores))) +
             geom_polygon(color = "#ffffff", size = .25) +
             coord_map(projection = "albers", lat0 = 39, lat1 = 45) +

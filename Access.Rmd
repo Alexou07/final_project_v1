@@ -20,24 +20,24 @@ census_api_key("9f9584127dd506cdaf80bdb78927e9c01c12f2b8")
 
 states_stats <- urbnmapr::counties %>%
   select(long, lat, group, county_fips, state_abbv, county_name) %>%
-  na.omit()
+  na.omit() %>%
+  mutate(county_fips = as.numeric(county_fips))
 
 names(states_stats)[5] <- "state"
 
 food <- read_xls("raw-data/DataDownload.xls", sheet = 5) %>%
   mutate_if(is.numeric, ~round(.,2)) %>%
   clean_names() %>% 
-  select(fips, pct_laccess_pop15, pct_laccess_lowi15) %>%
+  select(state, fips, pct_laccess_pop15, pct_laccess_lowi15) %>%
   na.omit()
 
-names(food)[1] <- "county_fips"
-
+names(food)[2] <- "county_fips"
 
 
 stores <- read_xls("raw-data/DataDownload.xls", sheet = 6) %>%
   clean_names() %>%
   mutate_if(is.numeric, ~round(.,2)) %>%
-  select(fips, grocpth14, convspth14) %>%
+  select(fips, state, grocpth14, convspth14) %>%
   na.omit()
 
 names(stores)[1] <- "county_fips"
@@ -47,38 +47,38 @@ one <- left_join(food, stores, by = "county_fips")
 local <- read_xls("raw-data/DataDownload.xls", sheet = 11) %>%
   clean_names() %>%
   mutate_if(is.numeric, ~round(.,2)) %>%
-  select(fips, fmrktpth16, pct_fmrkt_snap16, pct_fmrkt_frveg16) %>%
+  select(fips, state, fmrktpth16, pct_fmrkt_snap16, pct_fmrkt_frveg16) %>%
   na.omit(.)
 
 names(local)[1] <- "county_fips"
 
-two <- left_join(one, local, by = "county_fips")
+two <- left_join(one, local, by = "county_fips") %>%
+  select(-state.y, -state) %>%
+  mutate(county_fips = as.numeric(county_fips))
 
 
-health <- read_xls("raw-data/DataDownload.xls", sheet = 12) %>%
-  clean_names() %>%
-  mutate_if(is.numeric, ~round(.,2)) %>%
-  select(fips, pct_obese_adults13, pct_diabetes_adults13) %>%
-  na.omit(.)
+health <- read_csv("raw-data/Health.csv", ) %>%
+  clean_names() 
 
-names(health)[1] <- "county_fips"
+three <- left_join(two, health, by = "county_fips") %>%
+  select(-state)
 
-three <- left_join(two, health, by = "county_fips")
-
-food_stats <- left_join(states_stats, three, by = "county_fips")
+food_stats <- left_join(states_stats, three, by = "county_fips") %>%
+  select(-state.x, -county) %>%
+  mutate(obesity = as.numeric(obesity)) %>%
+  mutate(diabetes = as.numeric(diabetes)) %>%
+  mutate(physical_inactivity = as.numeric(physical_inactivity))
 
 write.csv(food_stats, file = "app/food_stats.csv")
 ```
 
 ```{r}
-food_stats %>%
-  filter(state == "AL") %>%
-ggplot(mapping = aes(long, lat, group = group, fill = pct_laccess_pop15)) +
-  geom_polygon(color = "#ffffff", size = .25) +
-  coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
-  scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
-  labs(fill = "Percent of population \n with low store access") +
-  theme(legend.title = element_text(),
-        legend.key.width = unit(.5, "in")) 
+regression <- lm(pct_laccess_pop15 ~ obesity, data = food_stats)
+summary(regression)
 
+food_stats %>%
+  filter(state_abbv == "AL") %>%
+  ggplot(aes(pct_laccess_pop15, physical_inactivity)) + geom_point() +
+  geom_smooth(method = lm) +
+  theme_classic() 
 ```
