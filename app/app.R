@@ -14,6 +14,7 @@ library(ggplot2)
 library(readr)
 library(tidyverse)
 library(markdown)
+library(shinythemes)
 
 
 national_stats <- read_csv("national_stats.csv")
@@ -24,6 +25,7 @@ source("functions.R")
 
 # Define UI for app that draws a histogram ----
 ui <- navbarPage("Obesity and Demographics in the US",
+                 theme = shinytheme("flatly"),
               
             # Plot tab panel ----
                tabPanel("Plot",
@@ -38,7 +40,6 @@ ui <- navbarPage("Obesity and Demographics in the US",
                                 selectInput("demo", "Choose a Variable", choices = c("Gender" = "gender",
                                                                                      "Race" = "race_ethnicity",
                                                                                      "Income" = "income")),
-                                br(),
                                 p("This plot shows the evolution of obesity rates in US states over the past few years. 
                                 You may choose a state and variable to examine how this evolution changes amongst certain 
                                 demographics. For example, the gender variable will let you observe how obesity rates 
@@ -68,7 +69,13 @@ ui <- navbarPage("Obesity and Demographics in the US",
                                                                   "Farmers' markets that accept SNAP (%)" = "pct_fmrkt_snap16",
                                                                   "Farmers markets that sell fruits & vegetables (%)" = "pct_fmrkt_frveg16",
                                                                   "Diabetes rate in adults (%)" = "diabetes",
-                                                                  "Obesity rate in adults (%)" = "obesity"))
+                                                                  "Obesity rate in adults (%)" = "obesity",
+                                                                  "Poverty rate (%)" = "poverty")),
+                                          p("These maps show the prevalence of specific variables in counties of US states. Select the state you
+                                            wish to observe as well as the variable. Make sure to look at the variable name to check how it is 
+                                            measured (i.e. in percentage). For example, 'the low access to stores' variable shows the percent of the
+                                            population that have low access to food stores in counties. The scale on the right side of the map shows 
+                                            which colors correspond to which distribution. Have fun playing around!")
                                       ),
                                       # Main panel for displaying outputs 
                                       mainPanel(
@@ -92,10 +99,16 @@ ui <- navbarPage("Obesity and Demographics in the US",
                                                         "Farmers' markets/1,000 pop, 2016" = "fmrktpth16",
                                                         "Farmers' markets that accept SNAP (%)" = "pct_fmrkt_snap16",
                                                         "Farmers markets that sell fruits & vegetables (%)" = "pct_fmrkt_frveg16",
-                                                        "Physical inactivity (%)" = "physical_activity")),
+                                                        "Physical inactivity (%)" = "physical_activity",
+                                                        "Poverty rate (%)" = "poverty")),
                                 selectInput("yvar", "Y variable",
                                             choices = c("Obesity rate (%)" = "obesity",
-                                                        "Diabetes rate (%)" = "diabetes"))
+                                                        "Diabetes rate (%)" = "diabetes")),
+                                p("How are factors correlated with obesity and diabetes rates in US States? First, pick a state 
+                                  to find out. Pick an independent variable and a dependent one to see how the relationship plays 
+                                  out. For example, is an increase in access to convenience stores postiviely correlated with obesity rates in
+                                  the states? By how much? Do keep in mind that these are correlations, and that no direct conclusions can be made 
+                                  from the data. Also, do not forget to check out the distribution and summary tabs for more information.")
                                     
                                 ),
                             # Main panel for displaying outputs 
@@ -120,10 +133,48 @@ ui <- navbarPage("Obesity and Demographics in the US",
                         DT::dataTableOutput('tbl')), 
             
             # About tab panel ----
-               tabPanel("About")
+               tabPanel("About",
+                        h1("Background"),
+                        p("In 2018, the Commonwealth Fund called the rising rates of obesity in America", 
+                        a("a Public Health Crisis.", href = "https://www.commonwealthfund.org/blog/2018/rising-obesity-united-states-public-health-crisis"),
+                        "A number of states in US boast a population where over 35% of inhabitants are obese. Obesity in itself is
+                        linked o chronic diseases including type 2 diabetes, hyperlipidemia, high blood pressure, cardiovascular disease, 
+                        and cancer. It also accounts for 18% of deaths among Americans."),
+                        p("Faced with this public crisis, many health experts emphasize food and exercise as a solution. However, despite",
+                        a("a thriving US weight-loss industry,", href = "https://www.webwire.com/ViewPressRel.asp?aId=209054"),
+                        "the rates of obesity do not seem to be slowing down. As such it seems that there might be other factors that influence this growth."),
+                        p("This project aims to fill the gaps in linking obesity to factors that have been underexplored. While food intake and
+                        exercise definetely impact one's health, other factors such as poverty and access to grocery stores may also play
+                        an undiagnosed role."),
+                        p("Ultimately this project aims to aid in answering the following questions: Can obesity be strictly linked to food and 
+                        exercise? If not, how might we change our approach to tackling its growing problem?
+                          "),
+                        p("This project's repo can be found at the following link:",
+                          a("https://github.com/Alexou07/final_project_v1", href = "https://github.com/Alexou07/final_project_v1")),
+                        h1("The Data"),
+                        p("This project draws data from the following websites and datasets."),
+                        p(a("The United States Census Bureau", href = "https://www.census.gov/data/datasets/2015/demo/saipe/2015-state-and-county.html")),
+                        p(" - The Small Area Income and Poverty Estimates (SAIPE) Program 2015 Dataset. This dataset provides the poverty rate for states and
+                          counties in the US. It also breaks it down by demographics."),
+                        p(a("The Center for Disease Control and Prevention.", href = "https://www.cdc.gov/")),
+                        p(" - The Nutrition, Physical Activity, and Obesity - American Community Survey Dataset. This dataset provides rates of obesity and physical
+                          ailments in the US, as well as factors that may influence these rates (i.e. physical activity)."),
+                        p(a("The United States Department of Agriculture Economic Research Service.", href = "https://www.ers.usda.gov/")),
+                        p(" - The Food Access Research Atlas Dataset. This dataset provides food access data for populations within census tracts; and
+                          offers census-tract-level data on food access that can be downloaded for community planning or research purposes."),
+                        h1("About Me"),
+                        p("I am a senior at Harvard University, pursuing a degree in Psychology with a minor in Philosophy. I am interested in tackling large-scale
+                          social issues through the careful manipulation of quantitative data. I took on this project with the aim of making the complex problem
+                          of obesity in the United States more approachable and visualizable."),
+                        p("You can reach me at the following places:"),
+                        p(a("Linkedin", href = "https://www.linkedin.com/in/alexandra-ubalijoro-57816b17a/")),
+                        p(a("Github", href = "https://github.com/Alexou07")),
+                        p(a("Email", href = "mailto:a.ubalijoro@gmail.com"))
+                        )
                    
                )
             
+
 
 
 
@@ -165,6 +216,8 @@ server <- function(input, output) {
            scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
             labs(title = "Distribution of variable by county",
                  fill = "Distribution") +
+           xlab("Longitude") + 
+           ylab("Latitude") +
             theme(legend.title = element_text(),
                   legend.key.width = unit(.5, "in")) 
        
@@ -196,17 +249,19 @@ server <- function(input, output) {
     output$distribution1 <- renderPlot({
         food_stats %>%
             filter(state == input$state_2) %>%
-            ggplot(aes(get(input$xvar))) + geom_histogram()
+            ggplot(aes(get(input$xvar))) + geom_histogram() +
+            xlab("X variable") +
+            theme_classic()
     }, height=300, width=300)
     
     output$distribution2 <- renderPlot({
         food_stats %>%
             filter(state == input$state_2) %>%
-            ggplot(aes(get(input$yvar))) + geom_histogram()
+            ggplot(aes(get(input$yvar))) + geom_histogram() +
+            xlab("X variable") +
+            theme_classic()
     }, height=300, width=300)
 }
-    
-
 
 # Run the application 
 shinyApp(ui = ui, server = server)
