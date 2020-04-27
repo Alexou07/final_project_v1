@@ -15,6 +15,10 @@ library(readr)
 library(tidyverse)
 library(markdown)
 library(shinythemes)
+library(tidycensus)
+library(urbnmapr)
+library(scales)
+library(janitor)
 
 
 national_stats <- read_csv("national_stats.csv")
@@ -99,7 +103,7 @@ ui <- navbarPage("Obesity and Demographics in the US",
                                                         "Farmers' markets/1,000 pop, 2016" = "fmrktpth16",
                                                         "Farmers' markets that accept SNAP (%)" = "pct_fmrkt_snap16",
                                                         "Farmers markets that sell fruits & vegetables (%)" = "pct_fmrkt_frveg16",
-                                                        "Physical inactivity (%)" = "physical_activity",
+                                                        "Physical inactivity (%)" = "physical_inactivity",
                                                         "Poverty rate (%)" = "poverty")),
                                 selectInput("yvar", "Y variable",
                                             choices = c("Obesity rate (%)" = "obesity",
